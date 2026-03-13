@@ -148,7 +148,8 @@ $ dot(V) <= -norm(delta x)^2 + 2 norm(P) norm(delta x) norm(d). $ <eq:vdot-iss>
 To obtain an ISS Lyapunov function per Theorem 11.2, we need $dot(V) <= -alpha_3(norm(delta x))$ when $norm(delta x) >= rho(norm(d))$, not merely $dot(V) < 0$. We split the decay term:
 $ dot(V) <= -1/2 norm(delta x)^2 - 1/2 norm(delta x)^2 + 2 norm(P) norm(delta x) norm(d). $
 Define $rho(s) = 4 norm(P) s$. When $norm(delta x) >= rho(norm(d))$:
-$ 2 norm(P) norm(d) <= 1/2 norm(delta x) quad ==> quad -1/2 norm(delta x)^2 + 2 norm(P) norm(delta x) norm(d) <= 0. $
+$ 2 norm(P) norm(d) <= 1/2 norm(delta x) \
+==> -1/2 norm(delta x)^2 + 2 norm(P) norm(delta x) norm(d) <= 0 $
 Therefore:
 $ norm(delta x) >= rho(norm(d)) quad ==> quad dot(V) <= -1/2 norm(delta x)^2, $
 establishing that $V$ is an ISS Lyapunov function with $alpha_3(r) = r^2 slash 2$ and $rho(s) = 4 norm(P) s approx 5.02 s$. By Corollary 11.1, the system is E-ISS.
