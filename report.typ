@@ -1,19 +1,9 @@
-#set document(title: "Dynamics of a 3-Neuron Hopfield Network", author: "Gavin Hua")
-#set page(margin: (x: 1in, y: 1in), numbering: "1")
-#set text(font: "New Computer Modern", size: 10pt)
-#set par(justify: true, leading: 0.55em)
-#set heading(numbering: "1.1")
-#show heading.where(level: 1): it => { v(0.8em); text(size: 12pt, weight: "bold", it); v(0.4em) }
-#show heading.where(level: 2): it => { v(0.6em); text(size: 11pt, weight: "bold", it); v(0.3em) }
-#set math.equation(numbering: "(1)")
-#show figure.caption: set text(size: 9pt)
-
 #import "@preview/charged-ieee:0.1.4": ieee
 
 #show: ieee.with(
   title: [Dynamics of a 3-Neuron Hopfield Network],
   abstract: [
-    We analyze a 3-neuron continuous-time Hopfield network using tools from nonlinear dynamical systems. The system has two stable equilibria (stored memories) and one saddle point. We establish well-posedness via global Lipschitz continuity, certify local exponential stability through linearization and quadratic Lyapunov functions, and prove input-to-state stability under bounded disturbances. Barrier functions certify disjoint forward-invariant sets around each memory, contained within the Lyapunov-based region of attraction. A hybrid system with periodic resets accelerates memory retrieval by up to $2.4 times$, and bifurcation analysis over coupling strength reveals two saddle-node bifurcations governing memory capacity.
+    We analyze a 3-neuron continuous-time Hopfield network using tools from nonlinear dynamical systems. The system has two stable equilibria (stored memories) and one saddle point. We establish well-posedness via global Lipschitz continuity, certify local exponential stability through linearization and quadratic Lyapunov functions, and prove input-to-state stability under bounded disturbances. Barrier functions certify disjoint forward-invariant sets around each memory. Bifurcation analysis over coupling strength reveals two saddle-node bifurcations governing memory capacity.
   ],
   authors: (
     (
@@ -27,14 +17,14 @@
 
 = Introduction
 
-The Hopfield network is a recurrent neural network with symmetric coupling that models associative memory. Introduced by Hopfield in 1982 as one of the first rigorous applications of Lyapunov-like energy arguments to neural computation, the architecture stores patterns as stable equilibria of a continuous dynamical system. 
+The Hopfield network is a recurrent neural network with symmetric coupling that models associative memory. Introduced by Hopfield @hopfield1982 as one of the first rigorous applications of Lyapunov-like energy arguments to neural computation, the architecture stores patterns as stable equilibria of a continuous dynamical system. 
 
 We study the continuous-time Hopfield network:
 $ tau dot(x) = -x + W sigma(x) + b $ <eq:hopfield>
 where $x, b in RR^n$, $W in RR^(n times n)$ is symmetric with zero diagonal, and $sigma = tanh$ acts element-wise. The state $x$ represents neuron membrane potentials evolving under mutual excitation/inhibition (through $W sigma(x)$), a passive leak term ($-x$), and a tonic bias current ($b$). We fix $n = 3$, which generates rich dynamical behavior — multiple attractors, bifurcations, and nontrivial basin geometry — while retaining analytic tractability. Throughout this report, we set
 $ tau = 1, quad W = mat(0, 2, -1; 2, 0, 1.5; -1, 1.5, 0), quad b = vec(0.1, -0.2, 0.15). $
 
-This report summarizes the analyses performed over the course of the semester, applying the tools of nonlinear dynamics to characterize the Hopfield network's dynamics: existence and uniqueness of solutions, sensitivity to perturbations, equilibrium structure and linearized stability, Lyapunov stability and region of attraction estimates, input-to-state stability under disturbances, barrier functions for forward invariance, hybrid dynamics for accelerated memory retrieval, and bifurcation structure under parameter variation.
+This report summarizes the analyses performed over the course of the semester, applying the tools of nonlinear dynamics to characterize the Hopfield network's dynamics: existence and uniqueness of solutions, sensitivity to perturbations, equilibrium structure and linearized stability, Lyapunov stability and region of attraction estimates, input-to-state stability under disturbances, barrier functions for forward invariance, and bifurcation structure under parameter variation.
 
 = Well-Posedness <sec:lipschitz>
 
@@ -60,7 +50,7 @@ $ x^((k+1))(t) = x_0 + integral_0^t f(x^((k))(s)) d s, quad x^((0))(t) = x_0, $
 against the RK45 numerical solution on $t in [0, 1]$ with $x_0 = (0.5, 0.3, 0.8)^top$.
 
 #figure(
-  image("assets/picard.png", width: 90%),
+  image("assets/picard.png", width: 70%),
   caption: [Picard iteration convergence. Dashed lines show iterates $k = 0, 1, 2, 4, 6, 12$; solid black is the RK45 reference. By $k = 12$ the Picard iterate is visually indistinguishable from the true solution.],
 ) <fig:picard>
 
@@ -109,7 +99,7 @@ At $x_0^*$, the Jacobian is
 $ A &= D f(x_0^*) \
 &= 1/tau (-I + W op("diag")(sigma'(x_0^*))) \
 &= mat(-1.000, 0.382, -0.191; 0.043, -1.000, 0.032; -0.833, 1.249, -1.000). $
-All eigenvalues ($lambda_1 = -1.505$, $lambda_2 = -0.901$, $lambda_3 = -0.594$) are real and strictly negative. Since all eigenvalues have nonzero real part, the Hartman--Grobman theorem applies: the nonlinear flow near $x_0^*$ is topologically conjugate to the linearized flow $delta dot(x) = A delta x$. By Theorem 8.3, $x_0^*$ is exponentially stable.
+All eigenvalues ($lambda_1 = -1.505$, $lambda_2 = -0.901$, $lambda_3 = -0.594$) are real and strictly negative. Since all eigenvalues have nonzero real part, the Hartman--Grobman theorem applies: the nonlinear flow near $x_0^*$ is topologically conjugate to the linearized flow $delta dot(x) = A delta x$. By Theorem 8.3 @ames2026, $x_0^*$ is exponentially stable.
 
 == Linearization at a Non-Equilibrium
 
@@ -210,43 +200,6 @@ Both methods certify valid forward-invariant sets around $x_0^*$, but they chara
   caption: [Comparison of certified invariant sets at $x_0^*$. _Left:_ 2D cross-section in the plane containing the tightest direction $hat(u)$; the green shading shows ${dot(V) < 0}$, which extends well beyond the plot in most directions. The touch point (triangle) marks where $Omega_c$ just meets the $dot(V) = 0$ boundary. _Right:_ 3D view of the ball barrier (red, $r = 2.95$) and Lyapunov ellipsoid $Omega_c$ (blue, $c = 6.13$) in world coordinates.],
 ) <fig:roa-comparison>
 
-= Hybrid Dynamics: Associative Memory with Resets <sec:hybrid>
-
-Hopfield networks serve as content-addressable memories, where stable equilibria represent stored patterns. We augment the continuous dynamics with discrete resets to model an accelerated memory retrieval process, using the hybrid systems framework of Lecture 16.
-
-== Hybrid System Formulation
-
-Following Definition 16.1, the hybrid system $cal(H) = (cal(D), S, Delta, f)$ is defined as:
-- *Domain:* $cal(D) = RR^3 times [0, T_"reset"]$
-- *Guard (switching surface):* $S = RR^3 times {0}$
-- *Continuous dynamics:* $dot(x) = f(x), space dot(tau) = -1$
-- *Reset map:* $x^+ = x + K(m_"nearest" - x), space tau^+ = T_"reset"$
-
-where $m_"nearest"$ is the nearest stored memory (stable equilibrium) to $x$, $K in (0, 1]$ is the reset gain, and $T_"reset"$ is the reset period. The timer $tau$ decreases linearly until it hits $S = {tau = 0}$, triggering a jump (eq. 16.1) that pushes the state toward the nearest attractor, after which $tau$ resets to $T_"reset"$ and continuous flow resumes.
-
-== Results
-
-Starting from the origin (approximately equidistant from both memories), convergence times to within $epsilon = 0.1$ of a memory are:
-
-#align(center)[
-#table(
-  columns: 2,
-  stroke: 0.5pt,
-  inset: 6pt,
-  [*Configuration*], [*Convergence time*],
-  [continuous], [7.05 s],
-  [Hybrid ($T_"reset" = 2.0$, $K = 0.3$)], [5.49 s],
-  [Hybrid ($T_"reset" = 1.0$, $K = 0.5$)], [3.00 s],
-)
-]
-
-#figure(
-  image("assets/hybrid.png", width: 65%),
-  caption: [Hybrid dynamics: distance to nearest memory over time. Gray: pure continuous dynamics. Colored: hybrid systems with periodic resets. More frequent, stronger resets accelerate convergence by up to $2.4 times$.],
-) <fig:hybrid>
-
-The periodic resets effectively nudge the trajectory toward the nearest attractor basin, accelerating convergence by up to $2.4 times$ (@fig:hybrid). 
-
 = Bifurcation Analysis <sec:bifurcation>
 
 We parameterize the weight matrix as $W -> alpha W$ and sweep $alpha in [0, 2]$ to study how the equilibrium structure changes with coupling strength.
@@ -280,5 +233,8 @@ We have demonstrated this low-dimensional 3-neuron Hopfield network exhibits ric
 + *Lyapunov analysis:* A quadratic Lyapunov function from the CTLE certifies local exponential stability with an RoA radius of 3.06, and LaSalle's invariance principle (Theorem 10.2) upgrades stability to asymptotic convergence.
 + *ISS:* The system is E-ISS under bounded disturbances (Corollary 11.1). The analytical bound is approximately $11 times$ conservative compared to numerical steady-state behavior.
 + *Barrier functions:* Ball barriers (Theorem 12.2) certify forward-invariant spheres of radius 2.95 and 2.87 around the two memories. Lyapunov sublevel barriers (Proposition 12.1) certify an ellipsoidal set ($c = 6.13$, semi-axes 2.21–4.70). Both are valid but neither contains the other; the ellipsoid covers ~35% more volume while the ball extends further in $P$'s largest-eigenvector direction.
-+ *Hybrid dynamics:* Periodic resets toward stored memories accelerate convergence by up to $2.4 times$.
 + *Bifurcation:* Two saddle-node bifurcations at $alpha approx 0.55$ and $alpha approx 1.20$ control memory capacity, connecting the network's computational function to its coupling strength.
+
+All source code and figure generation scripts are available at #link("https://github.com/gavin-hyl/hopfield-3d").
+
+#bibliography("refs.bib")
